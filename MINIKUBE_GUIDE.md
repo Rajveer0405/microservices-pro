@@ -87,7 +87,16 @@ minikube start --driver=docker
 
 This creates a local Kubernetes cluster.
 
-### 2. Use Minikube's Docker Environment
+### 2. Choose One Image Strategy
+
+You can use either of these approaches:
+
+- local Minikube build
+- Docker Hub push and pull
+
+#### Option A: Local Minikube Build
+
+Use this if only you are testing locally.
 
 ```powershell
 minikube -p minikube docker-env --shell powershell | Invoke-Expression
@@ -99,9 +108,7 @@ Why this is needed:
 - Kubernetes inside Minikube may not see those images
 - with this command, images are built inside Minikube's Docker environment
 
-### 3. Build Images
-
-Run from project root:
+Then build:
 
 ```powershell
 cd c:\Users\91810\Desktop\microservice
@@ -109,7 +116,26 @@ docker build -t auth-service:latest .\auth_service
 docker build -t user-service:latest .\user_service
 ```
 
-### 4. Apply Kubernetes Manifests
+#### Option B: Shared Docker Hub Images
+
+Use this if your friend will pull the project and run it too.
+
+Build and push:
+
+```powershell
+cd c:\Users\91810\Desktop\microservice
+docker build -t rajveersinghrajput/auth-service:v1 .\auth_service
+docker build -t rajveersinghrajput/user-service:v1 .\user_service
+docker push rajveersinghrajput/auth-service:v1
+docker push rajveersinghrajput/user-service:v1
+```
+
+In this setup:
+
+- you build once
+- you push once
+- your friend only needs `kubectl apply`
+### 3. Apply Kubernetes Manifests
 
 ```powershell
 kubectl apply -f .\k8s\auth-deployment.yaml

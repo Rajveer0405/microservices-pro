@@ -1,12 +1,16 @@
 # Kubernetes Setup
 
-## Build Docker Images
+## Push Images To Docker Hub
 
 ```powershell
 cd c:\Users\91810\Desktop\microservice
-docker build -t auth-service:latest .\auth_service
-docker build -t user-service:latest .\user_service
+docker build -t rajveersinghrajput/auth-service:v1 .\auth_service
+docker build -t rajveersinghrajput/user-service:v1 .\user_service
+docker push rajveersinghrajput/auth-service:v1
+docker push rajveersinghrajput/user-service:v1
 ```
+
+After that, anyone who pulls this repo can deploy the same images without rebuilding them locally.
 
 ## Apply Kubernetes Manifests
 
@@ -38,3 +42,4 @@ kubectl port-forward service/user-service 8001:8001
 
 - Inside Kubernetes, the user service calls the auth service using `http://auth-service:8000/verify`.
 - SQLite is stored inside each container, so data is not durable if a pod is recreated.
+- The Kubernetes deployment files are now set to pull images from Docker Hub.
